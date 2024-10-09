@@ -14,6 +14,8 @@
     </el-upload></el-col>
     <el-col :span="6">    <el-button type="success" @click="clearFileSelection">撤销选择</el-button></el-col>
 
+    <el-col :span="6">    <el-button type="success" @click="add">确定导入</el-button></el-col>
+
   </el-row>
     
 
@@ -39,6 +41,7 @@
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus'; // 假设使用的是 Element Plus 消息提示组件
 import * as XLSX from 'xlsx'; // 导入 xlsx 库
+import {studentInfoAdd} from '@/api/user/index.ts'
 
 const files = ref([]);
 const tableData = ref([]); // 读取所有的数据数组
@@ -115,6 +118,10 @@ const clearFileSelection = () => {
   tableData.value = []; // 清空表格数据
   files.value = []; // 清空文件列表
 };
+
+const add=()=>{
+  studentInfoAdd(tableData.value);
+}
 </script>
 
 <style >
