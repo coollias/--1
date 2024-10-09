@@ -1,7 +1,7 @@
 <template >
     <div class="logoimg">
       <img src="../../assets/images/logo.gif" alt="">
-      <p v-show="!LayOutSettingStore.fold">北京交通大学保研系统</p>
+      <p v-show="!LayOutSettingStore.fold">多功能智慧课程平台</p>
     </div>
 </template>
   

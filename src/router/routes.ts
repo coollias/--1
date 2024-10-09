@@ -52,21 +52,21 @@ export const constantRoute= [
         component:()=>import('@/views/rewardSubmit/index.vue'),
         name:'rSubmit',
         meta:{
-          title:'奖项提交',
+          title:'信息录入',
           hidden:false,
           icon:'FolderAdd'
         }
       },
-      {
-        path:'/Student/cSubmit',
-        component:()=>import('@/views/rewardSubmit/index.vue'),
-        name:'cSubmit',
-        meta:{
-          title:'奖项确认',
-          hidden:false,
-          icon:'FolderAdd'
-        }
-      },
+      // {
+      //   path:'/Student/cSubmit',
+      //   component:()=>import('@/views/rewardSubmit/index.vue'),
+      //   name:'cSubmit',
+      //   meta:{
+      //     title:'奖项确认',
+      //     hidden:false,
+      //     icon:'FolderAdd'
+      //   }
+      // },
     ]
   },
   {
