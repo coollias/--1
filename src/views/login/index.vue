@@ -41,7 +41,7 @@ import { ElNotification } from "element-plus";
 
 let $router=useRouter();
 let useStore=userUserStore();
-const loginForm=reactive({username:'admin',password:'111111'});
+const loginForm=ref({username:'admin',password:'111111'});
 const loading=ref(false);
 let loginforms=ref();
 
@@ -50,7 +50,8 @@ const login=async()=>{
   //开始加载的效果
   loading.value=true;
   try {
-    await useStore.userLogin(loginForm);
+    console.log(loginForm.value.username);
+    await useStore.userLogin(loginForm.value);
     $router.push('/');
     ElNotification({
       type:'success',

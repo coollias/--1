@@ -5,8 +5,9 @@ public class Student {
     private String name;
     private String gender;
     private String idCardNumber;
+    private String password; // Add password field
 
-    // Getter and setter for studentId
+    // Getters and Setters
     public String getStudentId() {
         return studentId;
     }
@@ -15,7 +16,6 @@ public class Student {
         this.studentId = studentId;
     }
 
-    // Getter and setter for name
     public String getName() {
         return name;
     }
@@ -24,7 +24,6 @@ public class Student {
         this.name = name;
     }
 
-    // Getter and setter for gender
     public String getGender() {
         return gender;
     }
@@ -33,12 +32,19 @@ public class Student {
         this.gender = gender;
     }
 
-    // Getter and setter for idCardNumber
     public String getIdCardNumber() {
         return idCardNumber;
     }
 
     public void setIdCardNumber(String idCardNumber) {
         this.idCardNumber = idCardNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

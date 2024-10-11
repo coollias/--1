@@ -14,6 +14,8 @@
     </el-upload></el-col>
     <el-col :span="6">    <el-button type="success" @click="clearFileSelection">撤销选择</el-button></el-col>
 
+    <el-col :span="6">    <el-button type="success" @click="add">确定导入</el-button></el-col>
+
   </el-row>
     
 
@@ -27,10 +29,10 @@
     </div>
     <!-- 表格展示 -->
     <el-table :data="tableData" style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="aac003" label="学号" width="150"></el-table-column>
-      <el-table-column prop="bac313" label="姓名" width="200"></el-table-column>
-      <el-table-column prop="bac314" label="性别" width="200"></el-table-column>
-      <el-table-column prop="bac502" label="身份证号" width="300"></el-table-column>
+      <el-table-column prop="studentId" label="学号" width="150"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="200"></el-table-column>
+      <el-table-column prop="gender" label="性别" width="200"></el-table-column>
+      <el-table-column prop="idCardNumber" label="身份证号" width="300"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -39,6 +41,7 @@
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus'; // 假设使用的是 Element Plus 消息提示组件
 import * as XLSX from 'xlsx'; // 导入 xlsx 库
+import {studentInfoAdd} from '@/api/user/index.ts'
 
 const files = ref([]);
 const tableData = ref([]); // 读取所有的数据数组
@@ -84,10 +87,10 @@ const handleFileUpload = (file, fileList) => {
     let excelData = XLSX.utils.sheet_to_json(worksheet);
 
     const fieldMap = {
-      '学号': 'aac003',
-      '姓名': 'bac313',
-      '性别': 'bac314',
-      '身份证号': 'bac502',
+      '学号': 'studentId',
+      '姓名': 'name',
+      '性别': 'gender',
+      '身份证号': 'idCardNumber',
     };
 
     excelData = excelData.map(row => {
@@ -115,6 +118,10 @@ const clearFileSelection = () => {
   tableData.value = []; // 清空表格数据
   files.value = []; // 清空文件列表
 };
+
+const add=()=>{
+  studentInfoAdd(tableData.value);
+}
 </script>
 
 <style >

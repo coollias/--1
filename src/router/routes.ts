@@ -52,7 +52,7 @@ export const constantRoute= [
         component:()=>import('@/views/rewardSubmit/index.vue'),
         name:'rSubmit',
         meta:{
-          title:'奖项提交',
+          title:'信息导入',
           hidden:false,
           icon:'FolderAdd'
         }

@@ -1,7 +1,9 @@
 package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.pojo.Result;
+import com.example.springbootdemo.pojo.Student;
 import com.example.springbootdemo.pojo.User;
+import com.example.springbootdemo.service.StudentService;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private StudentService StudentService;
     @PostMapping("/register")
     public Result register(String username,String password){
         //查询用户
@@ -34,15 +37,15 @@ public class UserController {
     @PostMapping("/login")
     public Result<String> login(String username,String password){
         //查询用户
-        User loginUser=userService.findByUserName(username);
-        if(loginUser == null){
+        Student student= StudentService.getStudentById(username);
+        if(student == null){
             return Result.error("用户不存在");
         }
-        if(password.equals(loginUser.getPassword())){
+        if(password.equals(student.getPassword())){
             Map<String, Object> claims = new HashMap<>();
-            claims.put("id",loginUser.getId());
-            claims.put("username",loginUser.getUsername());
-            String token=JwtUtil.genToken(claims);
+            claims.put("id",username);
+
+            String token= JwtUtil.genToken(claims);
             return Result.success(token);
         }
         return Result.error("密码错误");
