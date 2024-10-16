@@ -1,6 +1,11 @@
-
+import CourseDetail from '../views/course/courseDetail.vue'; // 假设你有一个 CourseDetail 组件
 //对外暴露常量路由
 export const constantRoute= [
+  // {
+  //   path: '/course/:id',
+  //   name: 'CourseDetail',
+  //   component: CourseDetail
+  // },
   {
     //登录
     path: "/login",
@@ -68,6 +73,29 @@ export const constantRoute= [
       //   }
       // },
     ]
+  },
+  {path:'/course',
+    component:()=>import("@/layout/index.vue"),
+    name:'course',
+    redirect: '/course/list',
+    meta:{
+      title:'课程',
+      hidden:false,
+      icon:'FolderAdd',
+    },
+    children:[
+      {
+      path:'/course/list',
+        component:()=>import('@/views/course/index.vue'),
+        name:'courseList',
+        meta:{
+          title:'课程列表',
+          hidden:false,
+          icon:'FolderAdd'
+        }
+      }
+    ]
+
   },
   {
     path:'/acl',
