@@ -1,6 +1,7 @@
 
 //对外暴露常量路由
 export const constantRoute= [
+  
   {
     //登录
     path: "/login",
@@ -52,22 +53,55 @@ export const constantRoute= [
         component:()=>import('@/views/rewardSubmit/index.vue'),
         name:'rSubmit',
         meta:{
-          title:'信息导入',
+          title:'信息录入',
+          hidden:false,
+          icon:'FolderAdd'
+        }
+      },
+      // {
+      //   path:'/Student/cSubmit',
+      //   component:()=>import('@/views/rewardSubmit/index.vue'),
+      //   name:'cSubmit',
+      //   meta:{
+      //     title:'奖项确认',
+      //     hidden:false,
+      //     icon:'FolderAdd'
+      //   }
+      // },
+    ]
+  },
+  {path:'/course',
+    component:()=>import("@/layout/index.vue"),
+    name:'course',
+    redirect: '/course/list',
+    meta:{
+      title:'课程',
+      hidden:false,
+      icon:'FolderAdd',
+    },
+    children:[
+      {
+      path:'/course/list',
+        component:()=>import('@/views/course/index.vue'),
+        name:'courseList',
+        meta:{
+          title:'课程列表',
           hidden:false,
           icon:'FolderAdd'
         }
       },
       {
-        path:'/Student/cSubmit',
-        component:()=>import('@/views/rewardSubmit/index.vue'),
-        name:'cSubmit',
-        meta:{
-          title:'奖项确认',
-          hidden:false,
-          icon:'FolderAdd'
-        }
-      },
+        path:'/course/manage',
+          component:()=>import('@/views/course/courseManage.vue'),
+          name:'courseManage',
+          meta:{
+            title:'课程管理',
+            hidden:false,
+            icon:'FolderAdd'
+          }
+        },
     ]
+
   },
   {
     path:'/acl',
