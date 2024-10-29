@@ -14,10 +14,11 @@
 //请求地址
 enum API{
   LOGIN_URL="/login1",
-  USERINFO_URL="/admin/acl/index/info",
+  USERINFO_URL="/user/userInfo",
   AWARD_POST="/reward/submit",
   AWARD_GET="/reward/info",
-  STUDENT_INFO_ADD="/students"
+  STUDENT_INFO_ADD="/students",
+  COURSE_LIST="/courses"
 }
 //登录接口
 export const reqLogin=(data:any)=>request.post<any>(API.LOGIN_URL,data);
@@ -27,3 +28,5 @@ export const awardInfo=()=>request.get<any,any>(API.AWARD_GET);
 export const awardPost=(data:any)=>request.post<any>(API.AWARD_POST,data);
 
 export const studentInfoAdd=(data:any)=>request.post<any>(API.STUDENT_INFO_ADD,data);
+
+export const courseList=()=>request.get<any>(API.COURSE_LIST);

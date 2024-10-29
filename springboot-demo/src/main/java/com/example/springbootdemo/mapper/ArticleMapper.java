@@ -4,7 +4,7 @@ import com.example.springbootdemo.pojo.Article;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
-
+//service实现
 @Mapper
 
 public interface ArticleMapper {

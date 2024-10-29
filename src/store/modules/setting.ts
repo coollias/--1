@@ -9,4 +9,20 @@ let useLayOutSettingStore =defineStore('SettingStore',{
   }
 })
 
+import { ref } from 'vue';
+import { courseList} from '@/api/user';
+const courses = ref<any[]>([]);
+const get=async()=>{
+  let result=await courseList();
+  // console.log(result);
+  courses.value=result as any[];
+
+}
+get();
+export const useCourseStore = defineStore('CourseStore', () => {
+
+  
+  return { courses };
+});
+
 export default useLayOutSettingStore;

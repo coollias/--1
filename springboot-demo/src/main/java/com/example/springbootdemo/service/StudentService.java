@@ -8,4 +8,5 @@ public interface StudentService {
 
     boolean login(String studentId, String password); // Add login method
      Student getStudentById(String studentId);
+
 }

@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/deal
+    url: jdbc:mysql://rm-cn-53y3z1sl4000gi2o.rwlb.rds.aliyuncs.com:3306/smart_course
     username: root
-    password: 123456
+    password: Gu123456
 
 
 mybatis:
