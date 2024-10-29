@@ -1,132 +1,97 @@
 
 <template>
-  <el-container> 
-    <el-header>
-      <h2>课程管理系统</h2>
-    </el-header>
-
-    <el-main>
-      <el-button type="primary" @click="AddCourseDialog = true">添加课程</el-button>
-
-      <el-table :data="filterTableData" style="width: 100%">
-        <el-table-column label="课程名" prop="name" />
-        <el-table-column label="教师" prop="teacher" />
-        <el-table-column label="学分" prop="credit" />
-        <el-table-column align="right">
-          <template #header>
-            <el-input v-model="search" size="small" placeholder="搜索课程" />
-          </template>
-          <template #default="scope">
-            <el-button size="small" type="primary" plain @click="handleEdit(scope.$index, scope.row)">
-              Edit
-            </el-button>
-            <el-button size="small" type="danger" plain @click="handleDelete(scope.$index, scope.row)">
-              Delete
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <el-dialog v-model="AddCourseDialog" title="添加课程" width="500">
-        <el-form :model="form">
-          <el-form-item label="课程名称" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="教师名称" :label-width="formLabelWidth">
-            <el-input v-model="form.teacher" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="学分" :label-width="formLabelWidth">
-            <el-select v-model="form.credit" placeholder="请选择学分">
-              <el-option label="2" value="2" />
-              <el-option label="3" value="3" />
-              <el-option label="4" value="4" />
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="AddCourseDialog = false">Cancel</el-button>
-            <el-button type="primary" @click="AddCourse()">
-              Confirm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-    </el-main>
-    
-    
-  </el-container>
+  <div>webSocket</div>
+  <div>
+    用户1
+    <input v-model="inputValue" />
+    <button @click="sendMsg">发送</button>
+    <button>关闭</button>
+  </div>
 </template>
-  
-  <script lang="ts" setup>
-  import { reactive, computed, ref } from 'vue'
 
-  const AddCourseDialog = ref(false)
-  const formLabelWidth = '140px'
 
-  const form = reactive({
-    name: '',
-    teacher: '',
-    credit: '',
-  })
+<script setup>
+import { ref } from 'vue'
+let inputValue = ref('')
+let maxTime = 3 //重连最大的连接次数
+let tryTime = 0 //重连后出错的次数
+let reconnentTimer //重连定时器
+let client
+let headerBeatTimer //心跳定时器
+//建立和webSocket服务的链接
+ 
+//webSocket不可能让所有人随便连接，所以我们需要携带token或者id
+//心跳检测 定期向websocket服务发送消息维持心跳是为了避免websocket给我们断开连接
+//定时重连 如果连接中断或者出错我们需要重新连接保证websocket连接的一个持续效果
+/* 
+1.直接带在url的query
+2.带在请求头上
+3.cookie
+*/
+const initWebSocket = () => {
+  client = new WebSocket('ws://localhost:8080/ws');
 
-  const AddCourse = () => {
-    // 将表单数据添加到课程列表中
-    tableData.push({
-      name: form.name,
-      teacher: form.teacher,
-      credit: form.credit,
-    })
+  //也可以用addEventLister监听
+  client.onopen = () => {
+    clearTimeout(reconnentTimer)
+    headerBeat() //连接上后就开启心跳检测
+    console.log('连接上了')
+  }
+ 
+  client.onmessage = (msg) => {
+    //后端有消息
+    console.log(JSON.parse(msg.data))
+  }
+ 
+  client.onclose = () => {
+    reconnect()
+    console.log('close')
+  }
+ 
+  client.onerror = () => {
+    tryTime += 1
+    reconnect()
+    console.log('error')
+  }
+}
+ 
+//websocket重连方法 
+/* 
+  重连不可能永远都进行重新连接那样的话触发的就太频繁了 所以需要一个定时器
+*/
+const reconnect = () => {
+  //清除定时器
+  clearTimeout(reconnentTimer)
+  //用一个定时器避免频繁重连
+  if(tryTime > maxTime) { //重连次数超过3次就不再重连
+     alert('重连次数超过3次，请联系管理员！')
+     clearTimeout(reconnentTimer)
+     clearInterval(headerBeatTimer)
+     return
+  }
+  reconnentTimer = setTimeout(() => {
+    initWebSocket()
+  }, 2000)
+}
+ 
+//webSockte 心跳检测
+const headerBeat = () => {
+  clearInterval(headerBeatTimer)
+  headerBeatTimer = setInterval(()=> {
+    client.send(JSON.stringify({
+      type: 'headerBeat',
+      msg: 'test'
+    }))
+  },3000)
+}
+ 
+function sendMsg() {
+  client.send(inputValue.value)
+}
+ 
+initWebSocket()
+</script>
+ 
 
-    console.log(form.name)
-    // 清空表单并关闭对话框
-    form.name = ''
-    form.teacher = ''
-    form.credit = ''
-    AddCourseDialog.value = false
-  }
-  
-  interface course {
-    name: string
-    teacher: string
-    credit: string
-  }
-  
-  const search = ref('')
-  const filterTableData = computed(() =>
-    tableData.filter(
-      (data) =>
-        !search.value ||
-        data.name.toLowerCase().includes(search.value.toLowerCase())
-    )
-  )
-  const handleEdit = (index: number, row: course) => {
-    console.log(index, row)
-  }
-  const handleDelete = (index: number, row: course) => {
-    console.log(index, row)
-  }
-  
-  const tableData = reactive<course[]> ([
-    {
-      name: '微积分',
-      teacher: '冯国臣',
-      credit: '4',
-    },
-    {
-      name: '线性代数',
-      teacher: '冯国臣',
-      credit: '3',
-    },
-    {
-      name: '项目管理与运维',
-      teacher: '邸晓飞',
-      credit: '3',
-    },
-    {
-      name: '实训',
-      teacher: '刘海明',
-      credit: '2',
-    },
-  ])
-  </script>
+ 
+<style scoped></style>
