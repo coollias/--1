@@ -19,6 +19,7 @@ enum API{
   AWARD_GET="/reward/info",
   STUDENT_INFO_ADD="/students",
   COURSE_LIST="/courses",
+  USER_LIST="/user/all"
 }
 //登录接口
 export const reqLogin=(data:any)=>request.post<any>(API.LOGIN_URL,data);
@@ -30,3 +31,4 @@ export const awardPost=(data:any)=>request.post<any>(API.AWARD_POST,data);
 export const studentInfoAdd=(data:any)=>request.post<any>(API.STUDENT_INFO_ADD,data);
 
 export const courseList=()=>request.get<any>(API.COURSE_LIST);
+export const UserList=()=>request.get<any>(API.USER_LIST);

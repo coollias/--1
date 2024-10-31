@@ -21,6 +21,7 @@
 <script setup>
 import { ref } from 'vue';
 import { ElNotification } from 'element-plus'; // 引入 Element Plus 通知
+import { reqUserInfo} from '@/api/user';
 
 let inputValue = ref('');
 let maxTime = 3; // 重连最大的连接次数
@@ -32,9 +33,18 @@ const inputid = ref('');
 const inputtoid = ref('')
 let isClosed = false; // 用于标记连接是否已关闭
 
+const sid=ref();
+const get=async()=>{
+  let result=await reqUserInfo();
+  //  console.log(result);
+   sid.value=result.data;
+}
+get();
+console.log(sid);
+
 const users = ref([
-  { id: '1', name: '用户1' },
-  { id: '2', name: '用户2' },
+  { id: '123456', name: '用户1' },
+  { id: '223456', name: '用户2' },
   { id: '3', name: '用户3' },
   // 在这里添加更多用户
 ]);
@@ -42,7 +52,7 @@ const users = ref([
 const selectedUsers = ref([]); // 存储选中的用户
 
 const initWebSocket = () => {
-  client = new WebSocket(`ws://localhost:8080/websocket/${inputid.value}`); // 修改为你的后端 WebSocket 地址
+  client = new WebSocket(`ws://localhost:8080/websocket/${sid.value}`); // 修改为你的后端 WebSocket 地址
 
   client.onopen = () => {
     clearTimeout(reconnentTimer);

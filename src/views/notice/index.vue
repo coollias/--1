@@ -1,26 +1,29 @@
 <template>
     <div>通知收发测试</div>
-    <br>
+    <br />
     <div>
-      <el-input v-model="inputid" style="width: 240px" placeholder="请输入你的id" />
-      <br />
       <el-input v-model="inputValue" style="width: 240px" placeholder="请输入你要发送的内容" />
       <br />
       <el-button @click="init">连接</el-button>
       <el-button @click="sendMsg">发送</el-button>
       <el-button @click="close">关闭</el-button>
     </div>
-    
+  
     <el-table :data="users" @selection-change="handleSelectionChange" style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="用户ID" width="180"></el-table-column>
-      <el-table-column prop="name" label="用户名" width="180"></el-table-column>
+      <el-table-column label="用户身份" width="180">
+        <template #default="{ row }">
+          <span>{{ getUserIdentity(row.identity) }}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </template>
   
   <script setup>
   import { ref } from 'vue';
   import { ElNotification } from 'element-plus'; // 引入 Element Plus 通知
+  import { reqUserInfo, UserList } from '@/api/user';
   
   let inputValue = ref('');
   let maxTime = 3; // 重连最大的连接次数
@@ -29,20 +32,28 @@
   let client;
   let headerBeatTimer; // 心跳定时器
   const inputid = ref('');
-  const inputtoid = ref('')
+  const inputtoid = ref('');
   let isClosed = false; // 用于标记连接是否已关闭
   
-  const users = ref([
-    { id: '1', name: '用户1' },
-    { id: '2', name: '用户2' },
-    { id: '3', name: '用户3' },
-    // 在这里添加更多用户
-  ]);
+  const sid = ref();
+  const get = async () => {
+    let result = await reqUserInfo();
+    sid.value = result.data;
+  };
+  get();
+  
+  const users = ref([]);
+  
+  const getUsers = async () => {
+    let result = await UserList();
+    users.value = result; // 假设返回的数据是用户数组
+  };
+  getUsers();
   
   const selectedUsers = ref([]); // 存储选中的用户
   
   const initWebSocket = () => {
-    client = new WebSocket(`ws://localhost:8080/websocket/${inputid.value}`); // 修改为你的后端 WebSocket 地址
+    client = new WebSocket(`ws://localhost:8080/websocket/${sid.value}`); // 修改为你的后端 WebSocket 地址
   
     client.onopen = () => {
       clearTimeout(reconnentTimer);
@@ -52,29 +63,30 @@
   
     client.onmessage = (msg) => {
       const data = JSON.parse(msg.data);
-      if(data.type=="note"){
-      // 显示 Element Plus 通知
-      ElNotification({
-        title: '新消息',
-        message: data.msg, // 假设消息在data.msg中
-        type: 'info',
-      });}
+      if (data.type == "note") {
+        // 显示 Element Plus 通知
+        ElNotification({
+          title: '新消息',
+          message: data.msg, // 假设消息在data.msg中
+          type: 'info',
+        });
+      }
     };
   
     client.onclose = () => {
-    if (!isClosed) { // 只有在未调用 close 时才重新连接
-      reconnect();
-      console.log('close');
-    }
-  };
+      if (!isClosed) { // 只有在未调用 close 时才重新连接
+        reconnect();
+        console.log('close');
+      }
+    };
   
-  client.onerror = () => {
-    if (!isClosed) { // 只有在未调用 close 时才重新连接
-      tryTime += 1;
-      reconnect();
-      console.log('error');
+    client.onerror = () => {
+      if (!isClosed) { // 只有在未调用 close 时才重新连接
+        tryTime += 1;
+        reconnect();
+        console.log('error');
+      }
     }
-  }
   };
   
   const reconnect = () => {
@@ -94,7 +106,7 @@
     clearInterval(headerBeatTimer);
     headerBeatTimer = setInterval(() => {
       client.send(JSON.stringify({
-        id:inputid.value,
+        id: sid.value,
         type: 'headerBeat',
         msg: 'test',
       }));
@@ -114,11 +126,12 @@
       }));
     });
   };
-  const init=()=>{
-  // 初始化 WebSocket 连接
-  initWebSocket();
-  }
   
+  const init = () => {
+    // 初始化 WebSocket 连接
+    initWebSocket();
+  };
+//   init();
   const close = () => {
     if (client) {
       client.close(); // 关闭 WebSocket 连接
@@ -131,6 +144,10 @@
     }
   };
   
+  // 根据用户身份 ID 返回身份描述
+  const getUserIdentity = (identity) => {
+    return identity === 1 ? '学生' : identity === 2 ? '老师' : '未知身份';
+  };
   
   </script>
   

@@ -1,15 +1,18 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.pojo.Course;
 import com.example.springbootdemo.pojo.Result;
 import com.example.springbootdemo.pojo.Student;
 import com.example.springbootdemo.pojo.User;
 import com.example.springbootdemo.service.StudentService;
+import com.example.springbootdemo.service.User1Service;
 import com.example.springbootdemo.service.UserService;
 import com.example.springbootdemo.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +22,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private StudentService StudentService;
+    @Autowired
+    private User1Service User1Service;
     @PostMapping("/register")
     public Result register(String username,String password){
         //查询用户
@@ -53,11 +58,16 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public Result<User> userInfo(@RequestHeader(name="Authorization") String token){
-        Map<String,Object> map=JwtUtil.parseToken(token);
-        String username= (String) map.get("username");
+    public Result<String> userInfo(@RequestHeader(name="Authorization") String token){
+        Map<String,Object> map= JwtUtil.parseToken(token);
+        String identity= map.get("identity").toString();
+        String id= (String) map.get("id");
+        return Result.success(id);
+    }
 
-        User user=userService.findByUserName(username);
-        return Result.success(user);
+    @GetMapping("/all")
+    public List<User> all(@RequestHeader(name="Authorization") String token){
+        List<User> users= User1Service.getAllUsers();
+        return users;
     }
 }
