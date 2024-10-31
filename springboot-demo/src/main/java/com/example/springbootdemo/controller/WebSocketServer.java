@@ -1,5 +1,7 @@
 package com.example.springbootdemo.controller;
 
+import com.example.springbootdemo.pojo.Message;
+import com.example.springbootdemo.utils.JsonUtils;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
@@ -88,13 +90,13 @@ public class WebSocketServer {
          */
         log.info("接收到消息-----------------"+message);
 //        //A发送消息给B，服务端收到A的消息后，从A的消息体中拿到B的uid及携带的手机号。查找B是否在线，如果B在线，则使用B的session发消息给B自己
-//        Message msgObj = JsonUtils.getObject(message, Message.class);
-//        String toSid = msgObj.getUid();
+        Message msgObj = JsonUtils.getObject(message, Message.class);
+        String toSid = msgObj.getId();
 //        String msg = msgObj.getMessage();
 //        String phone = msgObj.getPhone();
 //        //A给B发送消息，A要知道B的信息，发送消息的时候把B的信息携带过来
 //        log.info("服务端收到客户端消息 ==> fromSid = {}, toSid = {}, message = {}", uid, toSid, message);
-        sendToOne("1", message);
+        sendToOne(toSid, message);
     }
 
     /**
