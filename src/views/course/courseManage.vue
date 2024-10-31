@@ -3,15 +3,19 @@
   <br>
   <div>
     <el-input v-model="inputid" style="width: 240px" placeholder="请输入你的id" />
-    <br>
-    <el-input v-model="inputtoid" style="width: 240px" placeholder="请输入你要发送的id" />
-    <br>
+    <br />
     <el-input v-model="inputValue" style="width: 240px" placeholder="请输入你要发送的内容" />
-    <br>
-    <button @click="init">连接</button>
-    <button @click="sendMsg">发送</button>
-    <button @click="close">关闭</button>
+    <br />
+    <el-button @click="init">连接</el-button>
+    <el-button @click="sendMsg">发送</el-button>
+    <el-button @click="close">关闭</el-button>
   </div>
+  
+  <el-table :data="users" @selection-change="handleSelectionChange" style="width: 100%">
+    <el-table-column type="selection" width="55"></el-table-column>
+    <el-table-column prop="id" label="用户ID" width="180"></el-table-column>
+    <el-table-column prop="name" label="用户名" width="180"></el-table-column>
+  </el-table>
 </template>
 
 <script setup>
@@ -27,6 +31,15 @@ let headerBeatTimer; // 心跳定时器
 const inputid = ref('');
 const inputtoid = ref('')
 let isClosed = false; // 用于标记连接是否已关闭
+
+const users = ref([
+  { id: '1', name: '用户1' },
+  { id: '2', name: '用户2' },
+  { id: '3', name: '用户3' },
+  // 在这里添加更多用户
+]);
+
+const selectedUsers = ref([]); // 存储选中的用户
 
 const initWebSocket = () => {
   client = new WebSocket(`ws://localhost:8080/websocket/${inputid.value}`); // 修改为你的后端 WebSocket 地址
@@ -88,14 +101,19 @@ const headerBeat = () => {
   }, 3000);
 };
 
-function sendMsg() {
-  client.send(JSON.stringify({
-      id:inputtoid.value,
+const handleSelectionChange = (selection) => {
+  selectedUsers.value = selection; // 更新选中的用户
+};
+
+const sendMsg = () => {
+  selectedUsers.value.forEach(user => {
+    client.send(JSON.stringify({
+      id: user.id,
       type: 'note',
       msg: inputValue.value,
     }));
-  // client.send(inputValue.value);
-}
+  });
+};
 const init=()=>{
 // 初始化 WebSocket 连接
 initWebSocket();

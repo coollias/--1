@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,19 @@ public class CourseController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 //        }
 //    }
+@GetMapping("/{Cid}")
+public ResponseEntity<Map<String, Object>> getCourseById(@RequestHeader(name="Authorization") String token,@PathVariable String Cid) {
+    Course course = courseService.getCourseById(Cid);
+    // 根据课程ID获取描述
+    String description = courseMapper.getDescriptionByCid(Cid);
 
+    // 创建返回结果
+    Map<String, Object> courseanddescription = new HashMap<>();
+    courseanddescription.put("course", course);
+    courseanddescription.put("description", description);
+
+    return ResponseEntity.ok(courseanddescription);
+}
 
 
 

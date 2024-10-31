@@ -63,7 +63,7 @@ const courses = ref([
 
 const get=async()=>{
   let result=await courseList();
-  // console.log(result);
+   console.log(result);
    courses.value=result;
 }
 get();

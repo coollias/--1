@@ -103,6 +103,30 @@ export const constantRoute= [
     ]
 
   },
+  {path:'/notice',
+    component:()=>import("@/layout/index.vue"),
+    name:'notice',
+    redirect: '/notice/manage',
+    meta:{
+      title:'通知',
+      hidden:false,
+      icon:'FolderAdd',
+    },
+    children:[
+      {
+      path:'/notice/manage',
+        component:()=>import('@/views/notice/index.vue'),
+        name:'noticeManage',
+        meta:{
+          title:'通知管理',
+          hidden:false,
+          icon:'FolderAdd'
+        }
+      }
+      
+    ]
+
+  },
   {
     path:'/acl',
     component:()=>import("@/layout/index.vue"),

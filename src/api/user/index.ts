@@ -18,7 +18,7 @@ enum API{
   AWARD_POST="/reward/submit",
   AWARD_GET="/reward/info",
   STUDENT_INFO_ADD="/students",
-  COURSE_LIST="/courses"
+  COURSE_LIST="/courses",
 }
 //登录接口
 export const reqLogin=(data:any)=>request.post<any>(API.LOGIN_URL,data);
