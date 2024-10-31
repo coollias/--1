@@ -4,13 +4,13 @@ package com.example.springbootdemo.controller;
 import com.example.springbootdemo.mapper.CourseMapper;
 import com.example.springbootdemo.pojo.Course;
 import com.example.springbootdemo.service.CourseService;
+import com.example.springbootdemo.service.FileUpLoadService;
 import com.example.springbootdemo.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +20,8 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
+    @Autowired
+    private FileUpLoadService FileUpLoadService;
     @Autowired
     private CourseMapper courseMapper;
 
@@ -62,28 +63,34 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
-    // 根据课程ID获取课程
-    @GetMapping("/{Cid}")
-    public ResponseEntity<Map<String, Object>> getCourseById(@RequestHeader(name="Authorization") String token,@PathVariable String Cid) {
-        Course course = courseService.getCourseById(Cid);
-        // 根据课程ID获取描述
-        String description = courseMapper.getDescriptionByCid(Cid);
+//    @PostMapping
+//
+//    public ResponseEntity<String> addCourse(@RequestHeader(name="Authorization") String token,
+//                                            @RequestParam("file") MultipartFile file,
+//                                            @RequestParam("course") String courseJson) {
+//        try {
+//            // 解析 JSON 字符串为 Course 对象
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            Course course = objectMapper.readValue(courseJson, Course.class);
+//
+//            // 上传文件
+//            String imageUrl = FileUpLoadService.uploadFile(file);
+//            course.setImageUrl(imageUrl);
+//
+//            // 添加课程
+//            courseService.addCourse(course);
+//            return ResponseEntity.status(HttpStatus.CREATED).build();
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 打印异常信息
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//        }
+//    }
 
-        // 创建返回结果
-        Map<String, Object> courseanddescription = new HashMap<>();
-        courseanddescription.put("course", course);
-        courseanddescription.put("description", description);
-
-        return ResponseEntity.ok(courseanddescription);
-    }
 
 
-    // 添加新课程
-    @PostMapping
-    public ResponseEntity<Void> addCourse(@RequestHeader(name="Authorization") String token,@RequestBody Course course) {
-        courseService.addCourse(course);
-        return ResponseEntity.status(201).build();
-    }
+
+
+
 
     // 更新课程信息
     @PutMapping("/{Cid}")
