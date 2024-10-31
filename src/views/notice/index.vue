@@ -4,7 +4,7 @@
     <div>
       <el-input v-model="inputValue" style="width: 240px" placeholder="请输入你要发送的内容" />
       <br />
-      <el-button @click="init">连接</el-button>
+      <!-- <el-button @click="init">连接</el-button> -->
       <el-button @click="sendMsg">发送</el-button>
       <el-button @click="close">关闭</el-button>
     </div>
@@ -21,7 +21,7 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref,onMounted  } from 'vue';
   import { ElNotification } from 'element-plus'; // 引入 Element Plus 通知
   import { reqUserInfo, UserList } from '@/api/user';
   
@@ -37,9 +37,10 @@
   
   const sid = ref();
   const get = async () => {
-    let result = await reqUserInfo();
-    sid.value = result.data;
-  };
+  let result = await reqUserInfo();
+  sid.value = result.data;
+  initWebSocket(); // 确保在获取到 sid 后再初始化 WebSocket 连接
+};
   get();
   
   const users = ref([]);
@@ -127,11 +128,18 @@
     });
   };
   
-  const init = () => {
-    // 初始化 WebSocket 连接
-    initWebSocket();
-  };
-//   init();
+//   const init = () => {
+//     // 初始化 WebSocket 连接
+//     initWebSocket();
+//   };
+//    init();
+// onMounted(() => {
+
+//     get();
+//     getUsers();
+//     console.log(sid)
+//   initWebSocket(); // 在组件挂载时连接 WebSocket
+// });
   const close = () => {
     if (client) {
       client.close(); // 关闭 WebSocket 连接
