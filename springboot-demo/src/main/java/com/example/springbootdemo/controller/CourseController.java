@@ -3,13 +3,14 @@ package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.mapper.CourseMapper;
 import com.example.springbootdemo.pojo.Course;
+import com.example.springbootdemo.pojo.Result;
 import com.example.springbootdemo.service.CourseService;
 import com.example.springbootdemo.service.FileUpLoadService;
 import com.example.springbootdemo.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.springbootdemo.pojo.Result;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
-
+    // 引入 TokenBlacklistService
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
     @Autowired
     private CourseService courseService;
     @Autowired
@@ -29,6 +32,12 @@ public class CourseController {
     // 获取所有课程
     @GetMapping
     public List<Course> getAllCourses(@RequestHeader(name="Authorization") String token) {
+
+        // 检查 token 是否在黑名单中
+        if (tokenBlacklistService.isTokenInBlacklist(token)) {
+            return null;
+        }
+
         Map<String,Object> map= JwtUtil.parseToken(token);
         String identity= map.get("identity").toString();
         String id= (String) map.get("id");
@@ -88,6 +97,10 @@ public class CourseController {
 //    }
 @GetMapping("/{Cid}")
 public ResponseEntity<Map<String, Object>> getCourseById(@RequestHeader(name="Authorization") String token,@PathVariable String Cid) {
+    // 检查 token 是否在黑名单中
+    if (tokenBlacklistService.isTokenInBlacklist(token)) {
+        return null;
+    }
     Course course = courseService.getCourseById(Cid);
     // 根据课程ID获取描述
     String description = courseMapper.getDescriptionByCid(Cid);
@@ -108,6 +121,10 @@ public ResponseEntity<Map<String, Object>> getCourseById(@RequestHeader(name="Au
     // 更新课程信息
     @PutMapping("/{Cid}")
     public ResponseEntity<Void> updateCourse(@RequestHeader(name="Authorization") String token,@PathVariable String Cid, @RequestBody Course course) {
+        // 检查 token 是否在黑名单中
+        if (tokenBlacklistService.isTokenInBlacklist(token)) {
+            return null;
+        }
         course.setCid(Cid);  // 设置课程ID以更新
         courseService.updateCourse(course);
         return ResponseEntity.ok().build();
@@ -116,6 +133,10 @@ public ResponseEntity<Map<String, Object>> getCourseById(@RequestHeader(name="Au
     // 删除课程
     @DeleteMapping("/{Cid}")
     public ResponseEntity<Void> deleteCourse(@RequestHeader(name="Authorization") String token,@PathVariable String Cid) {
+        // 检查 token 是否在黑名单中
+        if (tokenBlacklistService.isTokenInBlacklist(token)) {
+            return null;
+        }
         courseService.deleteCourse(Cid);
         return ResponseEntity.ok().build();
     }

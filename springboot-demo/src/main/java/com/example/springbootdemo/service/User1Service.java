@@ -46,13 +46,26 @@ public class User1Service {
 
     public boolean login(String studentId, String password) {
         // Retrieve the student by studentId
-        System.out.println(studentId);
-        System.out.println(password);
+        System.out.println("id:"+studentId);
+        System.out.println("pwd:"+password);
         User user= user1Mapper.findById(studentId);
         if (user != null) {
             // Check if the password matches
+            System.out.println("find it");
             return user.getPassword().equals(password);
         }
         return false; // Return false if student is not found or password doesn't match
+    }
+    //改密码
+    public boolean updateUserPassword(User user) {
+        try {
+            // 调用 UserMapper 的 update 方法更新用户信息
+            user1Mapper.update(user);
+            return true;
+        } catch (Exception e) {
+            // 如果发生异常，打印日志并返回 false
+            e.printStackTrace();
+            return false;
+        }
     }
 }
