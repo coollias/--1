@@ -15,6 +15,7 @@
 enum API{
   LOGIN_URL="/login1",
   USERINFO_URL="/user/userInfo",
+  USERIDENTITY_URL="/user/userIdentity",
   AWARD_POST="/reward/submit",
   AWARD_GET="/reward/info",
   STUDENT_INFO_ADD="/students",
@@ -25,6 +26,7 @@ enum API{
 export const reqLogin=(data:any)=>request.post<any>(API.LOGIN_URL,data);
 //获取用户信息
 export const reqUserInfo=()=>request.get<any,any>(API.USERINFO_URL);
+export const reqUserIdentity=()=>request.get<any,any>(API.USERIDENTITY_URL);
 export const awardInfo=()=>request.get<any,any>(API.AWARD_GET);
 export const awardPost=(data:any)=>request.post<any>(API.AWARD_POST,data);
 

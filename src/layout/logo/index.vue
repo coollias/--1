@@ -11,9 +11,11 @@
 </script>
   
 <script lang="ts">
-export default{
-  name:"Logo"
-}
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: "Logo",
+});
 </script>
 <style scoped lang="scss">
 $logo_height:50px;

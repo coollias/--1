@@ -10,7 +10,7 @@
             <el-input
               v-model="loginForm.username"
               placeholder="请输入用户名"
-              :prefix-icon='User'
+              :prefix-icon="User"
             />
           </el-form-item>
           <el-form-item prop="password">
@@ -32,56 +32,67 @@
 </template>
 
 <script setup lang="ts">
-import { User,Lock,  } from "@element-plus/icons-vue";
-import { reactive,ref } from "vue";
-import userUserStore from '@/store/modules/user'
+import { User, Lock } from "@element-plus/icons-vue";
+import { ref } from "vue";
+import userUserStore from '@/store/modules/user';
 import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 
+const $router = useRouter();
+const useStore = userUserStore();
+const loginForm = ref({ username: '123456', password: '123456' });
+const loading = ref(false);
+const loginforms = ref();
 
-let $router=useRouter();
-let useStore=userUserStore();
-const loginForm=ref({username:'admin',password:'111111'});
-const loading=ref(false);
-let loginforms=ref();
-
-const login=async()=>{
+const login = async () => {
   await loginforms.value.validate();
-  //开始加载的效果
-  loading.value=true;
+  loading.value = true;
+  
   try {
-    console.log(loginForm.value.username);
     await useStore.userLogin(loginForm.value);
-    $router.push('/');
+    const userIdentity = useStore.identity; // 获取用户身份
+
+    // 根据身份跳转
+    if (userIdentity === "1") {
+      $router.push('/student'); // 学生主页
+    } else if (userIdentity === "2") {
+      $router.push('/teacher'); // 教师主页
+    } else if (userIdentity === "3") {
+      $router.push('/admin'); // 管理员主页
+    } else {
+      $router.push('/'); // 默认主页
+    }
+
     ElNotification({
-      type:'success',
-      message:'登陆成功'
-    })
-    loading.value=false;
+      type: 'success',
+      message: '登陆成功'
+    });
   } catch (error) {
-    loading.value=false;
     ElNotification({
-      type:'error',
-      message:(error as Error).message
-    })
+      type: 'error',
+      message: (error as Error).message
+    });
+  } finally {
+    loading.value = false;
   }
-    
 }
 
-const rules={
-  username:[
-    {required:true, message:'请输入内容',trigger:'blur'},
-    {required:true, min:5,max:10,message:'5-10',trigger:'blur'}
+const rules = {
+  username: [
+    { required: true, message: '请输入内容', trigger: 'blur' },
+    { min: 5, max: 10, message: '5-10个字符', trigger: 'blur' }
   ],
-  password:[],
-}
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' }
+  ],
+};
 </script>
 
 <style scoped lang="scss">
 .login_container {
   width: 100%;
   height: 100vh;
-  background: url("@/assets/images/login_back.jpg") no-repeat;
+  background: url("@/assets/images/login_back.jpg") no-repeat center center;
   background-size: cover;
 }
 
@@ -89,17 +100,16 @@ const rules={
   position: relative;
   width: 80%;
   top: 40vh;
-  //background: url("@/assets/images/mao.jpg");
-  background-size: cover;
-  //padding: 40px;
+  
   h1 {
     color: white;
     font-size: 40px;
   }
+  
   h2 {
     font-size: 20px;
     color: white;
-    margin: 20px 0px;
+    margin: 20px 0;
   }
 }
 </style>

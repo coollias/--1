@@ -1,9 +1,12 @@
+import { onMounted } from 'vue';
 <template>
-    <p>角色管理</p>
+    <div><p>欢迎来到主页</p></div>
 </template>
   
 <script setup lang='ts'>
-  
+
+
+ 
 </script>
   
 <style>

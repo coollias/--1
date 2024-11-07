@@ -48,13 +48,19 @@ let $router=useRouter();
 
   const goRoute=(vc: { index: RouteLocationRaw; })=>{
     $router.push(vc.index);
+    // setTimeout(() => {
+    //   window.location.reload();
+    //   }, 100);
+    // window.location.reload(); // 刷新页面
   }
 </script>
 
 <script lang="ts">
-export default{
-  name:'Menu',
-}
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: "Menu",
+});
 </script>
   
 <style>

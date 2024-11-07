@@ -1,6 +1,5 @@
 package com.example.springbootdemo.controller;
 
-import com.example.springbootdemo.pojo.Course;
 import com.example.springbootdemo.pojo.Result;
 import com.example.springbootdemo.pojo.Student;
 import com.example.springbootdemo.pojo.User;
@@ -63,6 +62,13 @@ public class UserController {
         String identity= map.get("identity").toString();
         String id= (String) map.get("id");
         return Result.success(id);
+    }
+    @GetMapping("/userIdentity")
+    public Result<String> userIdentity(@RequestHeader(name="Authorization") String token){
+        Map<String,Object> map= JwtUtil.parseToken(token);
+        String identity= map.get("identity").toString();
+
+        return Result.success(identity);
     }
 
     @GetMapping("/all")
