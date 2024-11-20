@@ -22,6 +22,17 @@ export const constantRoute1= [
   icon: 'FolderAdd'
   }
   },
+  {
+    path:'/student/exam/:examId',
+      component:()=>import('@/views/student/exam/examDetail.vue'),
+      name:'ExamPage',
+      meta:{
+        title:'考试进行',
+        hidden:true,
+        icon:'FolderAdd'
+      },
+      props: true,
+    },
  
   {
     path:'/student',
@@ -112,6 +123,41 @@ export const constantRoute1= [
         }
       }
       
+    ]
+
+  },
+  {path:'/student/exam',
+    component:()=>import("@/layout/index.vue"),
+    name:'studentexam',
+    redirect: '/student/exam/list',
+    meta:{
+      title:'考试',
+      hidden:false,
+      icon:'FolderAdd',
+    },
+    children:[
+      {
+      path:'/student/exam/list',
+        component:()=>import('@/views/student/exam/index.vue'),
+        name:'studentexamList',
+        meta:{
+          title:'待考列表',
+          hidden:false,
+          icon:'FolderAdd'
+        }
+      },
+      
+        {
+          path:'/student/exam/end/:score',
+            component:()=>import('@/views/student/exam/examEnd.vue'),
+            name:'ExamEnd',
+            meta:{
+              title:'考试结束',
+              hidden:true,
+              icon:'FolderAdd'
+            },
+            props: true,
+          },
     ]
 
   },

@@ -18,7 +18,7 @@
       </div>
       <!-- 内容展示 -->
       <div class="layout_main" :class="{fold:LayOutSettingStore.fold?true:false}">
-        <router-view :key="$route.fullPath"></router-view>
+        <router-view ></router-view>
       </div>
     </div>
 </template>
