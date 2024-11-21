@@ -146,7 +146,28 @@ export const constantRoute1= [
           icon:'FolderAdd'
         }
       },
-      
+      {
+        path:'/student/exam/create/:examId?',
+          component:()=>import('@/views/student/exam/createExam.vue'),
+          name:'EditExam',
+          meta:{
+            title:'创建试卷题目',
+            hidden:false,
+            icon:'FolderAdd'
+          },
+          props: true,
+        },
+        {
+          path:'/student/exam/createlist',
+            component:()=>import('@/views/student/exam/createExamList.vue'),
+            name:'studentexamCreateList',
+            meta:{
+              title:'创建试卷',
+              hidden:false,
+              icon:'FolderAdd'
+            },
+            props: true,
+          },
         {
           path:'/student/exam/end/:score',
             component:()=>import('@/views/student/exam/examEnd.vue'),
@@ -279,7 +300,62 @@ export const constantRoute2= [
     ]
 
   },
-  
+  {path:'/teacher/exam',
+    component:()=>import("@/layout/index.vue"),
+    name:'teacherexam',
+    redirect: '/teacher/exam/list',
+    meta:{
+      title:'考试',
+      hidden:false,
+      icon:'FolderAdd',
+    },
+    children:[
+      {
+      path:'/teacher/exam/list',
+        component:()=>import('@/views/student/exam/index.vue'),
+        name:'teacherexamList',
+        meta:{
+          title:'待考列表',
+          hidden:false,
+          icon:'FolderAdd'
+        }
+      },
+      {
+        path:'/teacher/exam/create/:examId?',
+          component:()=>import('@/views/student/exam/createExam.vue'),
+          name:'teacherEditExam',
+          meta:{
+            title:'创建试卷题目',
+            hidden:false,
+            icon:'FolderAdd'
+          },
+          props: true,
+        },
+        {
+          path:'/teacher/exam/createlist',
+            component:()=>import('@/views/student/exam/createExamList.vue'),
+            name:'teacherexamCreateList',
+            meta:{
+              title:'创建试卷',
+              hidden:false,
+              icon:'FolderAdd'
+            },
+            props: true,
+          },
+        {
+          path:'/teacher/exam/end/:score',
+            component:()=>import('@/views/student/exam/examEnd.vue'),
+            name:'teacherExamEnd',
+            meta:{
+              title:'考试结束',
+              hidden:true,
+              icon:'FolderAdd'
+            },
+            props: true,
+          },
+    ]
+
+  },
   
 
 ]

@@ -1,6 +1,7 @@
 package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.mapper.ExamMapper;
+import com.example.springbootdemo.pojo.CreateExamRequest;
 import com.example.springbootdemo.pojo.Exam;
 import com.example.springbootdemo.pojo.Question;
 import com.example.springbootdemo.service.ExamService;
@@ -112,7 +113,8 @@ public class ExamController
                     "C", question.getOptionC(),
                     "D", question.getOptionD()
             ));
-            questionData.put("score_percentage", question.getScorePercentage());
+            questionData.put("answer", question.getCorrectAnswer());
+            questionData.put("percentage", question.getScorePercentage());
             questionDataList.add(questionData);
         }
 
@@ -149,6 +151,55 @@ public class ExamController
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while submitting answers");
         }
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createExam(
+            @RequestHeader(name = "Authorization") String token,  // 从请求头获取token
+            @RequestBody CreateExamRequest createExamRequest) {
+        try {
+            // 1. 解析 token 获取用户身份和 ID
+            Map<String, Object> map = JwtUtil.parseToken(token);
+            String userId = (String) map.get("id");  // 从token中获取用户ID
+            // 你可以根据需要使用 userId 进行其他处理，或者记录创建考试的用户
+
+            // 2. 创建试卷
+            Exam exam = new Exam();
+            exam.setName(createExamRequest.getTitle());
+            exam.setDescription(createExamRequest.getDescription());
+            exam.setStartTime(createExamRequest.getStartTime());
+            exam.setEndTime(createExamRequest.getEndTime());
+            exam.setCreatedBy(userId);  // 使用从token中获得的用户ID作为创建者
+            int examId = examService.createExam(exam);
+
+            // 3. 创建题目
+            for (CreateExamRequest.QuestionRequest questionRequest : createExamRequest.getQuestions()) {
+                Question question = new Question();
+                question.setContent(questionRequest.getContent());
+                question.setOptionA(questionRequest.getOptions().get("A"));
+                question.setOptionB(questionRequest.getOptions().get("B"));
+                question.setOptionC(questionRequest.getOptions().get("C"));
+                question.setOptionD(questionRequest.getOptions().get("D"));
+                question.setCorrectAnswer(questionRequest.getAnswer());
+                question.setScorePercentage(questionRequest.getPercentage());
+
+                // 4. 保存题目
+                examService.saveQuestion(question);
+
+                // 5. 关联试卷和题目
+                examService.linkExamAndQuestion(examId, question.getQuestionId());
+            }
+
+            // 6. 关联试卷和课程
+            examService.linkExamAndCourse(examId, createExamRequest.getCourseId());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Exam created successfully!");
+        } catch (Exception e) {
+            e.printStackTrace(); // 打印堆栈信息
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating exam: " + e.getMessage());
+
+        }
+    }
+
 
 }
 

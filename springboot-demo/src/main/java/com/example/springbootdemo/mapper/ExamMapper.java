@@ -3,9 +3,7 @@ package com.example.springbootdemo.mapper;
 import com.example.springbootdemo.pojo.Answer;
 import com.example.springbootdemo.pojo.Exam;
 import com.example.springbootdemo.pojo.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -51,4 +49,17 @@ public interface ExamMapper {
     // 获取题目的得分百分比
     @Select("SELECT score_percentage FROM questions WHERE question_id = #{questionId}")
     Float getQuestionScoreById(Integer questionId);
+
+
+    @Insert("INSERT INTO exams (name, description, start_time, end_time, created_by) " +
+            "VALUES (#{name}, #{description}, #{startTime}, #{endTime}, #{createdBy})")
+    @Options(useGeneratedKeys = true, keyProperty = "examId")
+    void insertExam(Exam exam);
+
+
+    @Insert("INSERT INTO exam_courses (exam_id, course_id) VALUES (#{examId}, #{courseId})")
+    void insertExamCourseLink(@Param("examId") int examId, @Param("courseId") String courseId);
+
+    @Insert("INSERT INTO exam_questions (exam_id, question_id) VALUES (#{examId}, #{questionId})")
+    void linkExamAndQuestion(@Param("examId") int examId, @Param("questionId") int questionId);
 }
